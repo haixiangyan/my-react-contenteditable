@@ -1,5 +1,5 @@
 import React, {useState} from 'react'
-import ContentEditable, {ContentEditableEvent} from "./lib";
+import ContentEditable, {ContentEditableEvent} from "./lib/ContentEditable";
 
 function App() {
   const [value, setValue] = useState('');
