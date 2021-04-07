@@ -1,4 +1,4 @@
-import React, {HTMLAttributes, SyntheticEvent} from 'react'
+import React, {createElement, HTMLAttributes, SyntheticEvent} from 'react'
 import {Component} from "react"
 
 export type ContentEditableEvent = SyntheticEvent<any, Event> & {
@@ -6,6 +6,7 @@ export type ContentEditableEvent = SyntheticEvent<any, Event> & {
 };
 
 interface Props extends HTMLAttributes<HTMLElement> {
+  tagName?: string
   disabled?: boolean
   value?: string
   onChange?: (e: ContentEditableEvent) => void
@@ -89,24 +90,24 @@ class ContentEditable extends Component<Props> {
   }
 
   render() {
-    const { disabled, value, innerRef, ...passProps } = this.props
+    const {tagName, value, innerRef, ...passProps} = this.props
 
-    return (
-      <div
-        {...passProps}
-        ref={typeof innerRef === 'function' ? (node: HTMLDivElement) => {
+    return createElement(
+      tagName || 'div',
+      {
+        ...passProps,
+        ref: typeof innerRef === 'function' ? (node: HTMLDivElement) => {
           innerRef(node)
           this.el = node
-        }: innerRef || null}
-        contentEditable={disabled === undefined}
-        onInput={this.emitEvent}
-        onBlur={this.props.onBlur || this.emitEvent}
-        onKeyUp={this.props.onKeyUp || this.emitEvent}
-        onKeyDown={this.props.onKeyDown || this.emitEvent}
-        dangerouslySetInnerHTML={{__html: value || ''}}
-      >
-        {this.props.children}
-      </div>
+        } : innerRef || null,
+        contentEditable: this.props.disabled === undefined,
+        onInput: this.emitEvent,
+        onBlur: this.props.onBlur || this.emitEvent,
+        onKeyUp: this.props.onKeyUp || this.emitEvent,
+        onKeyDown: this.props.onKeyDown || this.emitEvent,
+        dangerouslySetInnerHTML: {__html: value || ''}
+      },
+      this.props.children
     )
   }
 }
