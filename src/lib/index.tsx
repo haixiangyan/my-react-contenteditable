@@ -9,6 +9,7 @@ interface Props extends HTMLAttributes<HTMLElement> {
   disabled?: boolean
   value?: string
   onChange?: (e: ContentEditableEvent) => void
+  innerRef?: React.RefObject<HTMLDivElement> | Function
 }
 
 const replaceCaret = (el: HTMLElement) => {
@@ -36,21 +37,35 @@ const replaceCaret = (el: HTMLElement) => {
 }
 
 class ContentEditable extends Component<Props> {
-  lastHtml = this.props.value
-  ref = createRef<HTMLDivElement>()
+  private lastHtml: string = this.props.value || ''
+  private el: HTMLElement | null = null
 
   componentDidUpdate() {
-    if (!this.ref.current) return
+    const el = this.getEl()
 
-    this.lastHtml = this.props.value
+    if (!el) return
 
-    replaceCaret(this.ref.current)
+    this.lastHtml = this.props.value || ''
+
+    replaceCaret(el)
+  }
+
+  getEl = (): HTMLElement | null => {
+    const {innerRef} = this.props
+
+    if (!!innerRef && typeof innerRef !== 'function') {
+      return innerRef.current
+    }
+
+    return this.el
   }
 
   emitEvent = (originalEvent: SyntheticEvent<any>) => {
-    if (!this.ref.current) return
+    const el = this.getEl()
 
-    const html = this.ref.current.innerHTML
+    if (!el) return
+
+    const html = el.innerHTML
     if (this.props.onChange && html !== this.lastHtml) {
       const event = {
         ...originalEvent,
@@ -66,12 +81,15 @@ class ContentEditable extends Component<Props> {
   }
 
   render() {
-    const { disabled, value, ...passProps } = this.props
+    const { disabled, value, innerRef, ...passProps } = this.props
 
     return (
       <div
         {...passProps}
-        ref={this.ref}
+        ref={typeof innerRef === 'function' ? (node: HTMLDivElement) => {
+          innerRef(node)
+          this.el = node
+        }: innerRef || null}
         contentEditable={disabled === undefined}
         onInput={this.emitEvent}
         onBlur={this.props.onBlur || this.emitEvent}
