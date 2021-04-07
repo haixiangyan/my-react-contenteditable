@@ -1,4 +1,4 @@
-import React, {createRef, HTMLAttributes, SyntheticEvent} from 'react'
+import React, {HTMLAttributes, SyntheticEvent} from 'react'
 import {Component} from "react"
 
 export type ContentEditableEvent = SyntheticEvent<any, Event> & {
@@ -10,6 +10,7 @@ interface Props extends HTMLAttributes<HTMLElement> {
   value?: string
   onChange?: (e: ContentEditableEvent) => void
   innerRef?: React.RefObject<HTMLDivElement> | Function
+  checkUpdate?: (nextProps: Props, thisProps: Props) => boolean
 }
 
 const replaceCaret = (el: HTMLElement) => {
@@ -39,6 +40,13 @@ const replaceCaret = (el: HTMLElement) => {
 class ContentEditable extends Component<Props> {
   private lastHtml: string = this.props.value || ''
   private el: HTMLElement | null = null
+
+  shouldComponentUpdate(nextProps: Readonly<Props>): boolean {
+    if (this.props.checkUpdate) {
+      return this.props.checkUpdate(nextProps, this.props)
+    }
+    return true
+  }
 
   componentDidUpdate() {
     const el = this.getEl()
