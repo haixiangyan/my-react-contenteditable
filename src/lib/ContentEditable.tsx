@@ -79,10 +79,10 @@ class ContentEditable extends Component<Props> {
       const event = {
         ...originalEvent,
         target: {
-          value: html || ''
+          ...originalEvent.target,
+            value: html || ''
         }
       }
-      // @ts-ignore
       this.props.onChange(event)
     }
 
