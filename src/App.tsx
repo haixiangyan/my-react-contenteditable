@@ -2,7 +2,7 @@ import React, {useState} from 'react'
 import ContentEditable, {ContentEditableEvent} from "./lib/ContentEditable";
 
 function App() {
-  const [value, setValue] = useState('');
+  const [value, setValue] = useState('<button>Hello</button> 123456');
 
   const onChange = (e: ContentEditableEvent) => {
     console.log('change', e.target.value)
