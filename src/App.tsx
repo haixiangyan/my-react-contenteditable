@@ -11,7 +11,7 @@ function App() {
 
   return (
     <div style={{ border: '1px solid black' }}>
-      <ContentEditable style={{ height: 300 }} value={value} onChange={onChange} />
+      <ContentEditable disabled={false} style={{ height: 300 }} value={value} onChange={onChange} />
     </div>
   );
 }

@@ -100,7 +100,7 @@ class ContentEditable extends Component<Props> {
           innerRef(node)
           this.el = node
         } : innerRef || null,
-        contentEditable: this.props.disabled === undefined,
+        contentEditable: this.props.disabled,
         onInput: this.emitEvent,
         onBlur: this.props.onBlur || this.emitEvent,
         onKeyUp: this.props.onKeyUp || this.emitEvent,
