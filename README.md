@@ -1,6 +1,6 @@
 # 造一个 react-contenteditable 轮子
 
-> > 文章源码：https://github.com/Haixiang6123/my-react-contenteditable
+> 文章源码：https://github.com/Haixiang6123/my-react-contenteditable
 >
 > 预览链接：http://yanhaixiang.com/my-react-contenteditable/
 >
